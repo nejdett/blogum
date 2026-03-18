@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title><%= post.title %></title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav>
+    <a href="/">Blog</a>
+    <% if(user) { %>
+        <% if(user.role === 'admin') { %>
+            <a href="/admin">Admin Panel</a>
+        <% } %>
+        <button class="dark-toggle" onclick="toggleDark()">🌙</button>
+        <form method="POST" action="/logout" style="display:inline; margin-left:auto">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-danger">👤 <%= user.username %> — Çıkış Yap</button>
+        </form>
+    <% } %>
+</nav>
+
+<div class="container">
+    <a href="/" class="btn btn-secondary" style="margin-bottom:1.5rem; display:inline-block">← Geri</a>
+    <div class="post-detail-header">
+        <span class="category-tag"><%= post.category %></span>
+        <h1><%= post.title %></h1>
+        <p class="post-meta"><%= post.createdAt.toLocaleDateString('tr-TR') %></p>
+    </div>
+    <% if(post.image) { %>
+        <img src="<%= post.image %>" alt="<%= post.title %>" class="post-cover-img">
+    <% } %>
+    <div class="post-detail-content"><%- post.content %></div>
+
+    <div class="comments-section">
+        <h3>Yorumlar (<%= comments.length %>)</h3>
+
+        <% if(user) { %>
+        <form method="POST" action="/blog/<%= post.slug %>/comment" class="comment-form" onsubmit="this.querySelector('button').disabled=true">
+            <textarea name="content" rows="3" placeholder="Yorumunuzu yazın..." required></textarea>
+            <button type="submit" class="btn btn-primary">Yorum Yap</button>
+        </form>
+        <% } else { %>
+            <p style="color:#888; margin-bottom:1rem"><a href="/login">Giriş yap</a> yorum yapabilirsin.</p>
+        <% } %>
+
+        <% if(comments.length === 0) { %>
+            <p style="color:#aaa">Henüz yorum yok.</p>
+        <% } else { %>
+            <% comments.forEach(comment => { %>
+                <div class="comment-card">
+                    <div class="comment-meta">
+                        <strong><%= comment.author.username %></strong>
+                        <span><%= comment.createdAt.toLocaleDateString('tr-TR') %></span>
+                        <% if(user && user.role === 'admin') { %>
+                            <form method="POST" action="/admin/comment/<%= comment._id %>?_method=DELETE" style="display:inline; margin-left:auto">
+                                <button type="submit" class="btn btn-danger" style="padding:0.2rem 0.6rem; font-size:0.8rem">Sil</button>
+                            </form>
+                        <% } %>
+                    </div>
+                    <p><%= comment.content %></p>
+                </div>
+            <% }) %>
+        <% } %>
+    </div>
+</div>
+<script>
+    if(localStorage.getItem('dark') === 'true') document.body.classList.add('dark')
+    function toggleDark() {
+        document.body.classList.toggle('dark')
+        localStorage.setItem('dark', document.body.classList.contains('dark'))
+    }
+</script>
+</body>
+</html>

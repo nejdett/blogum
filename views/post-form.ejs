@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title><%= post ? 'Düzenle' : 'Yeni Yazı' %></title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav>
+    <a href="/">Anasayfa</a>
+    <a href="/admin">Admin Panel</a>
+    <button class="dark-toggle" onclick="toggleDark()">🌙</button>
+    <form method="POST" action="/logout" style="display:inline; margin-left:auto">
+        <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-danger">👤 <%= user.username %> — Çıkış Yap</button>
+    </form>
+</nav>
+<div class="container" style="max-width:680px">
+    <a href="/admin" class="btn btn-secondary" style="margin-bottom:1.2rem; display:inline-block">← Geri</a>
+    <h1 style="margin-bottom:1.5rem"><%= post ? 'Yazıyı Düzenle' : 'Yeni Yazı' %></h1>
+
+    <div class="form-card">
+        <form method="POST" action="<%= post ? '/admin/edit/' + post._id + '?_method=PUT' : '/admin/new' %>" enctype="multipart/form-data">
+
+            <label>Başlık</label>
+            <input type="text" name="title" value="<%= post ? post.title : '' %>" required>
+
+            <label>Kategori</label>
+            <select name="category" id="categorySelect" onchange="handleCategoryChange(this)">
+                <% categories.forEach(cat => { %>
+                    <option value="<%= cat %>" <%= (post && post.category === cat) ? 'selected' : '' %>><%= cat %></option>
+                <% }) %>
+                <% if(!post || !categories.includes(post.category)) { %>
+                    <% if(post && post.category) { %>
+                        <option value="<%= post.category %>" selected><%= post.category %></option>
+                    <% } %>
+                <% } %>
+                <option value="__yeni__">+ Yeni Kategori Ekle</option>
+            </select>
+            <input type="text" name="newCategory" id="newCategoryInput" placeholder="Yeni kategori adı..." style="display:none; margin-top:0.5rem">
+            <input type="hidden" name="category" id="categoryHidden" value="<%= post ? post.category : (categories[0] || 'Genel') %>">
+
+            <label>Kapak Fotoğrafı</label>
+            <input type="file" name="image" accept="image/*">
+            <% if(post && post.image) { %>
+                <img src="<%= post.image %>" style="max-width:200px; margin-top:0.5rem; border-radius:4px; display:block">
+            <% } %>
+
+            <label style="margin-top:1rem">İçerik</label>
+            <textarea name="content" rows="12" required><%= post ? post.content : '' %></textarea>
+
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:0.5rem">
+                <label style="font-weight:normal; display:flex; align-items:center; gap:0.4rem">
+                    <input type="checkbox" name="isPublished" <%= post && post.isPublished ? 'checked' : '' %>>
+                    Yayınla
+                </label>
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    if(localStorage.getItem('dark') === 'true') document.body.classList.add('dark')
+    function toggleDark() {
+        document.body.classList.toggle('dark')
+        localStorage.setItem('dark', document.body.classList.contains('dark'))
+    }
+
+    function handleCategoryChange(select) {
+        const newInput = document.getElementById('newCategoryInput')
+        const hidden = document.getElementById('categoryHidden')
+        if (select.value === '__yeni__') {
+            newInput.style.display = 'block'
+            newInput.required = true
+            newInput.focus()
+        } else {
+            newInput.style.display = 'none'
+            newInput.required = false
+            hidden.value = select.value
+        }
+    }
+
+    document.querySelector('form').addEventListener('submit', function() {
+        const select = document.getElementById('categorySelect')
+        const newInput = document.getElementById('newCategoryInput')
+        const hidden = document.getElementById('categoryHidden')
+        if (select.value === '__yeni__' && newInput.value.trim()) {
+            hidden.value = newInput.value.trim()
+        } else if (select.value !== '__yeni__') {
+            hidden.value = select.value
+        }
+        select.disabled = true
+        newInput.disabled = true
+    })
+</script>
+</body>
+</html>

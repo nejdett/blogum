@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav>
+    <a href="/">Anasayfa</a>
+    <button class="dark-toggle" onclick="toggleDark()">🌙</button>
+    <form method="POST" action="/logout" style="display:inline; margin-left:auto">
+        <input type="hidden" name="_method" value="DELETE">
+        <button type="submit" class="btn btn-danger">👤 <%= username %> — Çıkış Yap</button>
+    </form>
+</nav>
+<div class="container">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem">
+        <h1>Admin Panel</h1>
+            <div style="display:flex; gap:0.5rem">
+                <a href="/admin/new" class="btn btn-primary">+ Yeni Yazı</a>
+                <a href="/admin/users" class="btn btn-secondary">Kullanıcılar</a>
+            </div>
+    </div>
+
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Başlık</th>
+                <th>Kategori</th>
+                <th>Durum</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% posts.forEach(post => { %>
+            <tr>
+                <td><%= post.title %></td>
+                <td><%= post.category %></td>
+                <td>
+                    <span class="badge <%= post.isPublished ? 'badge-green' : 'badge-gray' %>">
+                        <%= post.isPublished ? 'Yayında' : 'Taslak' %>
+                    </span>
+                </td>
+                <td>
+                    <a href="/admin/edit/<%= post._id %>" class="btn btn-secondary">Düzenle</a>
+                    <form method="POST" action="/admin/delete/<%= post._id %>?_method=DELETE" style="display:inline">
+                        <button type="submit" class="btn btn-danger">Sil</button>
+                    </form>
+                </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+</div>
+<script>
+    if(localStorage.getItem('dark') === 'true') document.body.classList.add('dark')
+    function toggleDark() {
+        document.body.classList.toggle('dark')
+        localStorage.setItem('dark', document.body.classList.contains('dark'))
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <a href="/">Anasayfa</a>
+        <% if(user) { %>
+            <% if(user.role === 'admin') { %>
+                <a href="/admin">Admin Panel</a>
+            <% } %>
+            <button class="dark-toggle" onclick="toggleDark()">🌙</button>
+            <form method="POST" action="/logout" style="display:inline; margin-left:auto">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="btn btn-danger">👤 <%= user.username %> — Çıkış Yap</button>
+            </form>
+        <% } else { %>
+            <a href="/login">Giriş Yap</a>
+        <% } %>
+    </nav>
+  <div class="container">
+    <div class="hero">
+        <h1>Merhaba, <%= user.username %> 👋</h1>
+        <p>Bugün ne okumak istersin?</p>
+    </div>
+    <h2 class="feed-title">Son Yazılar</h2>
+    <% if(posts.length === 0) { %>
+        <p>Henüz yazı yok.</p>
+    <% } else { %>
+        <% posts.forEach(post => { %>
+            <div class="post-card">
+                <% if(post.image) { %>
+                    <img src="<%= post.image %>" alt="<%= post.title %>" class="post-card-img">
+                <% } %>
+                <h2><a href="/blog/<%= post.slug %>"><%= post.title %></a></h2>
+                <p class="post-meta"><%= post.category %> &nbsp;·&nbsp; <%= post.createdAt.toLocaleDateString('tr-TR') %></p>
+                <p class="post-excerpt"><%= post.content.substring(0, 150) %>...</p>
+                <a href="/blog/<%= post.slug %>" class="read-more">Devamını oku →</a>
+            </div>
+        <% }) %>
+    <% } %>
+</div>
+
+<script>
+    if(localStorage.getItem('dark') === 'true') document.body.classList.add('dark')
+    function toggleDark() {
+        document.body.classList.toggle('dark')
+        localStorage.setItem('dark', document.body.classList.contains('dark'))
+    }
+</script>
+</body>
+</html>

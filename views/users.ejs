@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Kullanıcılar</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav>
+        <a href="/">Ana Sayfa</a>
+        <a href="/admin">Admin Panel</a>
+        <button class="dark-toggle" onclick="toggleDark()">🌙</button>
+        <form method="POST" action="/logout" style="display:inline; margin-left:auto">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-danger">👤 <%= username %> — Çıkış Yap</button>
+        </form>
+    </nav>
+    <div class="container">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem">
+            <h1>Kullanıcılar</h1>
+                 <a href="/admin" class="btn btn-secondary">← Admin Panel</a>
+        </div>
+
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Kullanıcı Adı</th>
+                    <th>E-posta</th>
+                    <th>Rol</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(user=> { %>
+                    <tr>
+                        <td>
+                            <%= user.username %>
+                        </td>
+                        <td>
+                            <%= user.email %>
+                        </td>
+                        <td>
+                            <span class="badge <%= user.role === 'admin' ? 'badge-green' : 'badge-gray' %>">
+                                <%= user.role %>
+                            </span>
+                        </td>
+                        <td>
+                            <form method="POST" action="/admin/users/<%= user._id %>/role">
+                                <button type="submit"
+                                    class="btn <%= user.role === 'admin' ? 'btn-danger' : 'btn-primary' %>">
+                                    <%= user.role==='admin' ? 'Adminliği Kaldır' : 'Admin Yap' %>
+                                </button>
+                            </form>
+                        </td>
+
+                    </tr>
+                    <% }) %>
+            </tbody>
+        </table>
+    </div>
+<script>
+    if(localStorage.getItem('dark') === 'true') document.body.classList.add('dark')
+    function toggleDark() {
+        document.body.classList.toggle('dark')
+        localStorage.setItem('dark', document.body.classList.contains('dark'))
+    }
+</script>
+</body>
+</html>
