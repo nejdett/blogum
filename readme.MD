@@ -16,7 +16,8 @@ Oturum Yönetimi: express-session ve connect-mongo ile kalıcı oturum desteği.
 
 Frontend: EJS (Embedded JavaScript) motoru ile dinamik sayfa yapısı.
 
-🛠 Kullanılan Teknolojiler
+
+Kullanılan Teknolojiler
 Backend: Node.js, Express.js
 
 Veritabanı: MongoDB (Mongoose ODM)
