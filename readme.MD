@@ -1,7 +1,7 @@
 Blog Yönetim Sistemi (Node.js & MongoDB)
 Bu proje, kullanıcıların kayıt olabildiği, giriş yapabildiği ve admin yetkisiyle blog içerikleri oluşturup yönetebildiği (CRUD) dinamik bir web uygulamasıdır.
 
-🚀 Özellikler
+ Özellikler
 Kullanıcı Sistemi: Passport.js ve Bcrypt kullanılarak güvenli kayıt ve giriş mekanizması.
 
 Blog Yönetimi (CRUD): * Blog yazılarını görüntüleme.
@@ -27,7 +27,7 @@ Template Engine: EJS
 
 Stil: CSS / Bootstrap
 
-📦 Kurulum ve Çalıştırma
+ Kurulum ve Çalıştırma
 Projeyi yerel bilgisayarınızda çalıştırmak için aşağıdaki adımları izleyin:
 
 Depoyu Klonlayın veya İndirin:
@@ -50,7 +50,7 @@ Bash
 npm start
 Uygulama varsayılan olarak http://localhost:3000 adresinde çalışacaktır.
 
-📁 Proje Yapısı
+ Proje Yapısı
 app.js: Uygulamanın ana giriş noktası ve konfigürasyonlar.
 
 models/: Mongoose şemaları (User, Blog).
